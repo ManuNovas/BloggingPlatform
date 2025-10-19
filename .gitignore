@@ -1,1 +1,4 @@
 .idea/
+__pycache__/
+.env
+http-client.private.env.json

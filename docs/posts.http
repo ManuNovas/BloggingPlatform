@@ -1,0 +1,15 @@
+POST {{url}}/posts/
+Content-Type: application/json
+
+{
+  "title": "Job classes in Final Fantasy",
+  "content": "This article explains the job classes in Final Fantasy.",
+  "category": "Jobs",
+  "tags": [
+    "Final",
+    "Fantasy",
+    "Jobs"
+  ]
+}
+
+###
