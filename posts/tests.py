@@ -113,3 +113,14 @@ class TestPost(TestCase):
         response = self.client.delete(reverse('posts:pk', args=[1024]))
         self.assertEqual(response.status_code, 404)
         self.assertEqual(Post.objects.filter(pk=post.id).exists(), True)
+
+    def test_get_post_success(self):
+        post = self.create_post()
+        response = self.client.get(reverse('posts:pk', args=[post.id]), accept='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['title'], post.title)
+
+    def test_get_post_not_found(self):
+        self.create_post()
+        response = self.client.get(reverse('posts:pk', args=[1024]))
+        self.assertEqual(response.status_code, 404)

@@ -32,6 +32,11 @@ def delete_post(post):
     post.delete()
     return HttpResponse(status=204)
 
+
+def get_post(post):
+    serializer = PostSerializer(post)
+    return JsonResponse(serializer.data)
+
 # Create your views here.
 @csrf_exempt
 def index(request):
@@ -54,6 +59,8 @@ def pk(request, primary_key):
             response = update_post(request, post)
         elif request.method == 'DELETE':
             response = delete_post(post)
+        elif request.method == 'GET':
+            response = get_post(post)
         else:
             response = HttpResponse('Invalid HTTP Method', status=405)
     except Exception as e:

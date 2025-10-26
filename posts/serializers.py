@@ -23,3 +23,6 @@ class PostSerializer(Serializer):
         post.tags = validated_data.get('tags', post.tags)
         post.save()
         return post
+
+    def get(self, post):
+        return post
