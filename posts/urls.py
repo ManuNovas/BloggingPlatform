@@ -1,6 +1,8 @@
 from django.urls import path
 from posts import views
 
+app_name = 'posts'
 urlpatterns = [
-    path('', views.posts, name='posts')
+    path('', views.index, name='index'),
+    path('<int:primary_key>/', views.pk, name='pk')
 ]

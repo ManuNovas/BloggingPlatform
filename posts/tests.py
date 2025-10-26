@@ -1,9 +1,19 @@
 from django.test import TestCase
+from django.urls import reverse
+
+from posts.models import Post
+
 
 # Create your tests here.
 class TestPost(TestCase):
+    @staticmethod
+    def create_post():
+        return Post.objects.create(title='Job classes in Final Fantasy',
+                                   content='This article explains the job classes in Final Fantasy.', category='Jobs',
+                                   tags=['Final', 'Fantasy', 'Jobs'])
+
     def test_create_post_success(self):
-        response = self.client.post('/posts/', {
+        response = self.client.post(reverse('posts:index'), {
             'title': 'Job classes in Final Fantasy',
             'content': 'This article explains the job classes in Final Fantasy.',
             'category': 'Jobs',
@@ -16,14 +26,14 @@ class TestPost(TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_create_post_invalid_data(self):
-        response = self.client.post('/posts/', {
+        response = self.client.post(reverse('posts:index'), {
             'title': 'Job classes in Final Fantasy',
             'category': 'Jobs',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_create_post_invalid_method(self):
-        response = self.client.put('/posts/', {
+        response = self.client.put(reverse('posts:index'), {
             'title': 'Job classes in Final Fantasy',
             'content': 'This article explains the job classes in Final Fantasy.',
             'category': 'Jobs',
@@ -34,3 +44,60 @@ class TestPost(TestCase):
             ]
         }, content_type='application/json')
         self.assertEqual(response.status_code, 405)
+
+    def test_update_post_success(self):
+        post = self.create_post()
+        response = self.client.put(reverse('posts:pk', args=[post.id]), {
+            'title': 'Job classes in Final Fantasy updated',
+            'content': 'This article explains the job classes in Final Fantasy updated.',
+            'category': 'Jobs updated',
+            'tags': [
+                'Final',
+                'Fantasy',
+                'Jobs',
+                'Updated',
+            ]
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Post.objects.get(id=post.id).title, 'Job classes in Final Fantasy updated')
+
+    def test_update_post_invalid_data(self):
+        post = self.create_post()
+        response = self.client.put(reverse('posts:pk', args=[post.id]), {
+            'title': 'Job classes in Final Fantasy updated',
+            'category': 'Jobs updated',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Post.objects.get(id=post.id).title, 'Job classes in Final Fantasy')
+
+    def test_update_post_invalid_method(self):
+        post = self.create_post()
+        response = self.client.post(reverse('posts:pk', args=[post.id]), {
+            'title': 'Job classes in Final Fantasy updated',
+            'content': 'This article explains the job classes in Final Fantasy updated.',
+            'category': 'Jobs updated',
+            'tags': [
+                'Final',
+                'Fantasy',
+                'Jobs',
+                'Updated',
+            ]
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(Post.objects.get(id=post.id).title, 'Job classes in Final Fantasy')
+
+    def test_update_post_not_found(self):
+        post = self.create_post()
+        response = self.client.put(reverse('posts:pk', args=[1024]), {
+            'title': 'Job classes in Final Fantasy updated',
+            'content': 'This article explains the job classes in Final Fantasy updated.',
+            'category': 'Jobs updated',
+            'tags': [
+                'Final',
+                'Fantasy',
+                'Jobs',
+                'Updated',
+            ]
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(Post.objects.get(id=post.id).title, 'Job classes in Final Fantasy')

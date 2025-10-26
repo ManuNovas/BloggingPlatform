@@ -15,3 +15,11 @@ class PostSerializer(Serializer):
 
     def create(self, validated_data):
         return Post.objects.create(**validated_data)
+
+    def update(self, post, validated_data):
+        post.title = validated_data.get('title', post.title)
+        post.content = validated_data.get('content', post.content)
+        post.category = validated_data.get('category', post.category)
+        post.tags = validated_data.get('tags', post.tags)
+        post.save()
+        return post

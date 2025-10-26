@@ -1,3 +1,19 @@
+PUT {{url}}/posts/{{id}}/
+Content-Type: application/json
+
+{
+  "title": "Job classes in Final Fantasy updated",
+  "content": "This article explains the job classes in Final Fantasy updated.",
+  "category": "Jobs updated",
+  "tags": [
+    "Final",
+    "Fantasy",
+    "Jobs",
+    "Updated"
+  ]
+}
+
+###
 POST {{url}}/posts/
 Content-Type: application/json
 
