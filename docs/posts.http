@@ -1,3 +1,7 @@
+GET {{url}}/posts/
+Accept: application/json
+
+###
 GET {{url}}/posts/{{id}}/
 Accept: application/json
 

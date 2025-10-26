@@ -26,3 +26,7 @@ class PostSerializer(Serializer):
 
     def get(self, post):
         return post
+
+
+class SearchSerializer(Serializer):
+    term = CharField(min_length=3, max_length=64, required=False)

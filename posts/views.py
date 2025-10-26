@@ -1,9 +1,10 @@
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
 from posts.models import Post
-from posts.serializers import PostSerializer
+from posts.serializers import PostSerializer, SearchSerializer
 
 
 def create_post(request):
@@ -37,12 +38,31 @@ def get_post(post):
     serializer = PostSerializer(post)
     return JsonResponse(serializer.data)
 
+
+def get_posts(request):
+    data = SearchSerializer(data=request.GET)
+    if data.is_valid():
+        term = data.validated_data.get('term')
+        if term:
+            posts = Post.objects.filter(
+                Q(title__contains=term) | Q(content__contains=term) | Q(category__contains=term) | Q(
+                    tags__contains=[term]))
+        else:
+            posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        response = JsonResponse(serializer.data, safe=False)
+    else:
+        response = JsonResponse(data.errors, status=400)
+    return response
+
 # Create your views here.
 @csrf_exempt
 def index(request):
     try:
         if request.method == 'POST':
             response = create_post(request)
+        elif request.method == 'GET':
+            response = get_posts(request)
         else:
             response = HttpResponse('Invalid HTTP Method', status=405)
     except Exception as e:
