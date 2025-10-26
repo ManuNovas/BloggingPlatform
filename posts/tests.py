@@ -101,3 +101,15 @@ class TestPost(TestCase):
         }, content_type='application/json')
         self.assertEqual(response.status_code, 404)
         self.assertEqual(Post.objects.get(id=post.id).title, 'Job classes in Final Fantasy')
+
+    def test_delete_post_success(self):
+        post = self.create_post()
+        response = self.client.delete(reverse('posts:pk', args=[post.id]))
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Post.objects.filter(pk=post.id).exists(), False)
+
+    def test_delete_post_not_found(self):
+        post = self.create_post()
+        response = self.client.delete(reverse('posts:pk', args=[1024]))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(Post.objects.filter(pk=post.id).exists(), True)

@@ -27,6 +27,11 @@ def update_post(request, post):
         response = JsonResponse(serializer.errors, status=400)
     return response
 
+
+def delete_post(post):
+    post.delete()
+    return HttpResponse(status=204)
+
 # Create your views here.
 @csrf_exempt
 def index(request):
@@ -47,6 +52,8 @@ def pk(request, primary_key):
         post = Post.objects.get(pk=primary_key)
         if request.method == 'PUT':
             response = update_post(request, post)
+        elif request.method == 'DELETE':
+            response = delete_post(post)
         else:
             response = HttpResponse('Invalid HTTP Method', status=405)
     except Exception as e:

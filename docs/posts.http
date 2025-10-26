@@ -1,3 +1,7 @@
+DELETE {{url}}/posts/{{id}}/
+Accept: application/json
+
+###
 PUT {{url}}/posts/{{id}}/
 Content-Type: application/json
 
