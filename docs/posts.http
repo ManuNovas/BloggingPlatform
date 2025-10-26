@@ -1,3 +1,7 @@
+GET {{url}}/posts/{{id}}/
+Accept: application/json
+
+###
 DELETE {{url}}/posts/{{id}}/
 Accept: application/json
 
